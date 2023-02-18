@@ -1,4 +1,4 @@
-from rapid_api_key import x_rapid_key, x_rapid_host
+from misc.rapid_api_key import x_rapid_key, x_rapid_host
 
 import requests
 from pprint import pprint
