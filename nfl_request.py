@@ -1,3 +1,4 @@
+#add rapidAPI keys. stored in external file.
 from misc.rapid_api_key import x_rapid_key, x_rapid_host
 
 import requests
@@ -10,8 +11,8 @@ def getGamesData(dates: list):
     for date in dates:
         querystring = {"date":date,"league":"1"}
         headers = {
-            "X-RapidAPI-Key": "e7dd9deb9amsh4edb5dd8a68beb9p13c86fjsn7b0d675d570f",
-            "X-RapidAPI-Host": "api-american-football.p.rapidapi.com"
+            "X-RapidAPI-Key": x_rapid_key,
+            "X-RapidAPI-Host": x_rapid_host
         }
         response = requests.request("GET", url, headers=headers, params=querystring)
         json_response = response.json()
