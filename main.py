@@ -1,4 +1,3 @@
-from pprint import pprint
 import nfl_request
 import write_form
 

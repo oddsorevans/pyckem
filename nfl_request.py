@@ -2,17 +2,19 @@
 from misc.rapid_api_key import x_rapid_key, x_rapid_host
 
 import requests
-from pprint import pprint
+import os
 
 def getGamesData(dates: list):
     url = "https://api-american-football.p.rapidapi.com/games"
     gameData = {}
+    rapidKey = x_rapid_key
+    rapidHost = x_rapid_host
 
     for date in dates:
         querystring = {"date":date,"league":"1"}
         headers = {
-            "X-RapidAPI-Key": x_rapid_key,
-            "X-RapidAPI-Host": x_rapid_host
+            "X-RapidAPI-Key": rapidKey,
+            "X-RapidAPI-Host": rapidHost
         }
         response = requests.request("GET", url, headers=headers, params=querystring)
         json_response = response.json()
