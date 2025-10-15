@@ -1,0 +1,67 @@
+name: Create NFL Pick-em Form
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: 'Start date for games (YYYY-MM-DD)'
+        required: true
+        type: string
+      end_date:
+        description: 'End date for games (YYYY-MM-DD)'
+        required: true
+        type: string
+      week:
+        description: 'NFL week number'
+        required: true
+        type: number
+      final_game:
+        description: 'Final game for tiebreaker (e.g., "Texans vs. Seahawks")'
+        required: true
+        type: string
+
+  # Optional: Schedule to run automatically
+  # Uncomment and customize the schedule below
+  # schedule:
+  #   # Runs every Tuesday at 10:00 AM UTC (adjust for your timezone)
+  #   - cron: '0 10 * * 2'
+
+jobs:
+  create-form:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create Google Form
+      env:
+        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}
+        RAPID_API_HOST: ${{ secrets.RAPID_API_HOST }}
+      run: |
+        python main.py \
+          --start-date "${{ inputs.start_date }}" \
+          --end-date "${{ inputs.end_date }}" \
+          --week ${{ inputs.week }} \
+          --final-game "${{ inputs.final_game }}"
+
+    - name: Workflow summary
+      if: success()
+      run: |
+        echo "### Form Created Successfully! :football:" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Week:** ${{ inputs.week }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Date Range:** ${{ inputs.start_date }} to ${{ inputs.end_date }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Tiebreaker:** ${{ inputs.final_game }}" >> $GITHUB_STEP_SUMMARY
