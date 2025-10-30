@@ -38,9 +38,10 @@ def create_write_form(games: dict, week: int, final: str):
             flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
             creds = flow.run_local_server(port=0)
 
-        # Save the credentials for the next run
-        with open(token_path, 'w') as token:
-            token.write(creds.to_json())
+        # Save the credentials for the next run (only when running locally, not in GitHub Actions)
+        if not os.environ.get('GOOGLE_CREDENTIALS_JSON'):
+            with open(token_path, 'w') as token:
+                token.write(creds.to_json())
 
     form_service = build('forms', 'v1', credentials=creds,
                         discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
